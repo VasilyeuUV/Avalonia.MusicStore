@@ -1,17 +1,14 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:Avalonia.MusicStore.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="Avalonia.MusicStore.Views.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="Avalonia.MusicStore"
+        x:Class="Avalonia.MusicStore.MusicStoreWindow"
+        Title="MusicStoreWindow"
         TransparencyLevelHint="AcrylicBlur"
-        Background="Transparent"
         ExtendClientAreaToDecorationsHint="True"
-        WindowStartupLocation="CenterScreen"        
+        Width="1000" Height="550"
+        WindowStartupLocation="CenterOwner"
         >
   <Panel>
     <ExperimentalAcrylicBorder IsHitTestVisible="False">
@@ -24,12 +21,8 @@
       </ExperimentalAcrylicBorder.Material>
     </ExperimentalAcrylicBorder>
 
-    <Panel Margin="30">
-      <Button Command="{Binding BuyMusicCommand}"
-              HorizontalAlignment="Right"
-              VerticalAlignment="Top">
-        <PathIcon Data="{StaticResource store_microsoft_regular}"/>
-      </Button>
+    <Panel Margin="40">
+
     </Panel>
   </Panel>
 </Window>
