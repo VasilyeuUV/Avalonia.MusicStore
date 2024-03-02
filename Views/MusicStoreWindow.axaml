@@ -9,6 +9,8 @@
         ExtendClientAreaToDecorationsHint="True"
         Width="1000" Height="550"
         WindowStartupLocation="CenterOwner"
+        
+        xmlns:uc="using:Avalonia.MusicStore.Views.UserControls"
         >
   <Panel>
     <ExperimentalAcrylicBorder IsHitTestVisible="False">
@@ -22,7 +24,7 @@
     </ExperimentalAcrylicBorder>
 
     <Panel Margin="40">
-
+      <uc:MusicStoreViewUserControl/>
     </Panel>
   </Panel>
 </Window>
