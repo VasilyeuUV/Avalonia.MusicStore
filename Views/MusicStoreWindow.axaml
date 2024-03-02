@@ -24,7 +24,7 @@
     </ExperimentalAcrylicBorder>
 
     <Panel Margin="40">
-      <uc:MusicStoreViewUserControl/>
+      <uc:MusicStoreView/>
     </Panel>
   </Panel>
 </Window>

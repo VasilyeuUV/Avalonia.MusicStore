@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace Avalonia.MusicStore.Views.UserControls;
 
-public partial class MusicStoreViewUserControl : UserControl
+public partial class MusicStoreView : UserControl
 {
-    public MusicStoreViewUserControl()
+    public MusicStoreView()
     {
         InitializeComponent();
     }

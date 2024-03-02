@@ -23,4 +23,11 @@
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.6" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.6" />
   </ItemGroup>
+
+
+  <ItemGroup>
+    <Compile Update="Views\UserControls\AlbumView.axaml.cs">
+      <DependentUpon>AlbumView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>
