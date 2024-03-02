@@ -29,5 +29,8 @@
     <Compile Update="Views\UserControls\AlbumView.axaml.cs">
       <DependentUpon>AlbumView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\UserControls\MusicStoreViewUserControl.axaml.cs">
+      <DependentUpon>MusicStoreViewUserControl.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

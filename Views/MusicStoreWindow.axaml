@@ -10,7 +10,7 @@
         Width="1000" Height="550"
         WindowStartupLocation="CenterOwner"
         
-        xmlns:uc="using:Avalonia.MusicStore.Views.UserControls"
+        xmlns:uc="using:Avalonia.MusicStore.Views"
         >
   <Panel>
     <ExperimentalAcrylicBorder IsHitTestVisible="False">
