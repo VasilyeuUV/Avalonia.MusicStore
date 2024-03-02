@@ -1,9 +1,10 @@
 ﻿using Avalonia.MusicStore.Models;
-using iTunesSearch.Library.Models;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive.Linq;
+using System.Threading;
 
 namespace Avalonia.MusicStore.ViewModels
 {
@@ -15,7 +16,7 @@ namespace Avalonia.MusicStore.ViewModels
         private string? _searchText;
         private bool _isBusy;
         private AlbumViewModel? _selectedAlbum;
-
+        private CancellationTokenSource? _cancellationTokenSource;  // - позволит отменить выполнение метода по загрузке обложек альбомов.
 
         /// <summary>
         /// CTOR
@@ -57,6 +58,11 @@ namespace Avalonia.MusicStore.ViewModels
             IsBusy = true;
             SearchResults.Clear();
 
+            // установка cancellation token
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource = new CancellationTokenSource();
+            var cancellationToken = _cancellationTokenSource.Token;
+
             if (!string.IsNullOrWhiteSpace(s))
             {
                 var albums = await AlbumModel.SearchAsync(s);
@@ -66,9 +72,31 @@ namespace Avalonia.MusicStore.ViewModels
                     var vm = new AlbumViewModel(album);
                     SearchResults.Add(vm);
                 }
+
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    LoadCovers(cancellationToken);
+                }
             }
 
             IsBusy = false;
+        }
+
+        /// <summary>
+        /// Метод, который сможет запускать загрузку обложек альбомов при изменении результатов поиска (асинхронный, отменяемый)
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        private async void LoadCovers(CancellationToken cancellationToken)
+        {
+            foreach (var album in SearchResults.ToList())
+            {
+                await album.LoadCover();
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+            }
         }
     }
 }

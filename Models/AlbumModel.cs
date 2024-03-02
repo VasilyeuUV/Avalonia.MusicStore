@@ -1,6 +1,8 @@
 ﻿using iTunesSearch.Library;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Avalonia.MusicStore.Models
@@ -8,10 +10,14 @@ namespace Avalonia.MusicStore.Models
     public class AlbumModel
     {
         private static iTunesSearchManager s_SearchManager = new();
+        private static HttpClient s_httpClient = new();
+
 
         public string Artist { get; set; }
         public string Title { get; set; }
         public string CoverUrl { get; set; }
+        private string CachePath => $"./Cache/{Artist} - {Title}";
+
 
         /// <summary>
         /// CTOR
@@ -38,6 +44,23 @@ namespace Avalonia.MusicStore.Models
                     x.CollectionName,
                     x.ArtworkUrl100.Replace("100x100bb", "600x600bb"))
                 );
+        }
+
+        /// <summary>
+        /// Получение картинок из API
+        /// </summary>
+        /// <returns> Метод возвращает поток, который можно использовать для загрузки изображения из кэш-файла или API.</returns>
+        public async Task<Stream> LoadCoverBitmapAsync()
+        {
+            if (File.Exists(CachePath + ".bmp"))                            //  - чтение из кэша
+            {
+                return File.OpenRead(CachePath + ".bmp");                       
+            }
+            else
+            {                                                               //  - чтение из API
+                var data = await s_httpClient.GetByteArrayAsync(CoverUrl);
+                return new MemoryStream(data);
+            }
         }
     }
 }
