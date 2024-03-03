@@ -106,26 +106,30 @@ namespace Avalonia.MusicStore.Models
         //#################################################################################################
         #region Код реализации загрузки с диска
 
-        public static async Task<Album> LoadFromStream(Stream stream)
+        public static async Task<AlbumModel> LoadFromStream(Stream stream)
         {
-            return (await JsonSerializer.DeserializeAsync<Album>(stream).ConfigureAwait(false))!;
+            return (await JsonSerializer
+                .DeserializeAsync<AlbumModel>(stream)
+                .ConfigureAwait(false))!;
         }
 
-        public static async Task<IEnumerable<Album>> LoadCachedAsync()
+        public static async Task<IEnumerable<AlbumModel>> LoadCachedAsync()
         {
             if (!Directory.Exists("./Cache"))
             {
                 Directory.CreateDirectory("./Cache");
             }
 
-            var results = new List<Album>();
+            var results = new List<AlbumModel>();
 
             foreach (var file in Directory.EnumerateFiles("./Cache"))
             {
-                if (!string.IsNullOrWhiteSpace(new DirectoryInfo(file).Extension)) continue;
+                if (!string.IsNullOrWhiteSpace(new DirectoryInfo(file).Extension)) 
+                    continue;
 
                 await using var fs = File.OpenRead(file);
-                results.Add(await AlbumModel.LoadFromStream(fs).ConfigureAwait(false));
+                results.Add(await AlbumModel.LoadFromStream(fs)
+                    .ConfigureAwait(false));
             }
 
             return results;

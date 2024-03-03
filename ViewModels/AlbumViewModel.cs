@@ -1,7 +1,7 @@
-﻿using Avalonia.MusicStore.Models;
-using Avalonia.Media.Imaging;
-using System.Threading.Tasks;
+﻿using Avalonia.Media.Imaging;
+using Avalonia.MusicStore.Models;
 using ReactiveUI;               // в Авалонии использовать это, а не System.Bitmap из .NET
+using System.Threading.Tasks;
 
 namespace Avalonia.MusicStore.ViewModels
 {

@@ -1,7 +1,10 @@
-﻿using ReactiveUI;
+﻿using Avalonia.MusicStore.Models;
+using ReactiveUI;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Input;
+using System.Reactive.Concurrency;
 
 namespace Avalonia.MusicStore.ViewModels
 {
@@ -26,6 +29,8 @@ namespace Avalonia.MusicStore.ViewModels
                     await result.SaveToDiskAsync();
                 }
             });
+
+            RxApp.MainThreadScheduler.Schedule(LoadAlbums);
         }
 
 
@@ -45,5 +50,23 @@ namespace Avalonia.MusicStore.ViewModels
         /// Объявление взаимодействия с новым диалоговым окном
         /// </summary>
         public Interaction<MusicStoreViewModel, AlbumViewModel?> ShowDialog { get; }
+
+
+
+        private async void LoadAlbums()
+        {
+            var albums = (await AlbumModel.LoadCachedAsync())
+                .Select(x => new AlbumViewModel(x));
+
+            foreach (var album in albums)
+            {
+                Albums.Add(album);
+            }
+
+            foreach (var album in Albums.ToList())
+            {
+                await album.LoadCover();
+            }
+        }
     }
 }
