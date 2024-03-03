@@ -1,8 +1,10 @@
 ﻿using iTunesSearch.Library;
+using iTunesSearch.Library.Models;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Avalonia.MusicStore.Models
@@ -62,5 +64,74 @@ namespace Avalonia.MusicStore.Models
                 return new MemoryStream(data);
             }
         }
+
+        #region Код для сохранения на диск
+
+        /// <summary>
+        /// Сохраняет текстовые данные альбома как JSON-файл
+        /// </summary>
+        /// <returns></returns>
+        public async Task SaveAsync()
+        {
+            if (!Directory.Exists("./Cache"))
+            {
+                Directory.CreateDirectory("./Cache");
+            }
+
+            using (var fs = File.OpenWrite(CachePath))
+            {
+                await SaveToStreamAsync(this, fs);
+            }
+        }
+
+        /// <summary>
+        /// Сохраняет обложку в виде файла изображения формата .BMP.
+        /// </summary>
+        /// <returns></returns>
+        public Stream SaveCoverBitmapStream()
+        {
+            return File.OpenWrite(CachePath + ".bmp");
+        }
+
+
+        private static async Task SaveToStreamAsync(AlbumModel data, Stream stream)
+        {
+            await JsonSerializer.SerializeAsync(stream, data).ConfigureAwait(false);
+        }
+
+        #endregion // Код для сохранения на диск
+
+
+
+        //#################################################################################################
+        #region Код реализации загрузки с диска
+
+        public static async Task<Album> LoadFromStream(Stream stream)
+        {
+            return (await JsonSerializer.DeserializeAsync<Album>(stream).ConfigureAwait(false))!;
+        }
+
+        public static async Task<IEnumerable<Album>> LoadCachedAsync()
+        {
+            if (!Directory.Exists("./Cache"))
+            {
+                Directory.CreateDirectory("./Cache");
+            }
+
+            var results = new List<Album>();
+
+            foreach (var file in Directory.EnumerateFiles("./Cache"))
+            {
+                if (!string.IsNullOrWhiteSpace(new DirectoryInfo(file).Extension)) continue;
+
+                await using var fs = File.OpenRead(file);
+                results.Add(await AlbumModel.LoadFromStream(fs).ConfigureAwait(false));
+            }
+
+            return results;
+        }
+
+
+        #endregion // Код реализации загрузки с диска
     }
 }

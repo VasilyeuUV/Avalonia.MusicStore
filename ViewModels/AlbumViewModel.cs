@@ -46,5 +46,24 @@ namespace Avalonia.MusicStore.ViewModels
                 Cover = await Task.Run(() => Bitmap.DecodeToWidth(imageStream, 400));   // - DecodeToWidth, преобразует поток изображений для отображения через Avalonia UI.
             }
         }
+
+
+        public async Task SaveToDiskAsync()
+        {
+            await _album.SaveAsync();
+
+            if (Cover != null)
+            {
+                var bitmap = Cover;
+
+                await Task.Run(() =>
+                {
+                    using (var fs = _album.SaveCoverBitmapStream())
+                    {
+                        bitmap.Save(fs);
+                    }
+                });
+            }
+        }
     }
 }
