@@ -11,7 +11,9 @@
         TransparencyLevelHint="AcrylicBlur"
         Background="Transparent"
         ExtendClientAreaToDecorationsHint="True"
-        WindowStartupLocation="CenterScreen"        
+        WindowStartupLocation="CenterScreen"
+        
+        xmlns:views="clr-namespace:Avalonia.MusicStore.Views"
         >
   <Panel>
     <ExperimentalAcrylicBorder IsHitTestVisible="False">
@@ -30,6 +32,21 @@
               VerticalAlignment="Top">
         <PathIcon Data="{StaticResource store_microsoft_regular}"/>
       </Button>
+
+      <ItemsControl Margin="0 40 0 0" ItemsSource="{Binding Albums}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <views:AlbumView Margin="0 0 20 20" />
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>      
+      
     </Panel>
   </Panel>
 </Window>

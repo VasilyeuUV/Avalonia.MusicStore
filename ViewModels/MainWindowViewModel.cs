@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using System.Windows.Input;
 
@@ -19,8 +20,19 @@ namespace Avalonia.MusicStore.ViewModels
             {
                 var store = new MusicStoreViewModel();
                 var result = await ShowDialog.Handle(store);
+                if (result != null)
+                {
+                    Albums.Add(result);
+                }
             });
         }
+
+
+        /// <summary>
+        /// Список выбранных альбомов
+        /// </summary>
+        public ObservableCollection<AlbumViewModel> Albums { get; } = new();
+
 
 
         /// <summary>

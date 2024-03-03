@@ -3,6 +3,7 @@ using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading;
 
@@ -23,11 +24,19 @@ namespace Avalonia.MusicStore.ViewModels
         /// </summary>
         public MusicStoreViewModel()
         {
-            this.WhenAnyValue(x => x.SearchText)
-                .Throttle(TimeSpan.FromMilliseconds(400))
-                .ObserveOn(RxApp.MainThreadScheduler)
-                .Subscribe(DoSearch!);
+            // Инициализации реактивной команды Покупки альбома
+            BuyMusicCommand = ReactiveCommand.Create(() =>
+            {
+                return SelectedAlbum;
+            });
+
+            // Запуск поиска всякий раз, как меняется текст
+            this.WhenAnyValue(x => x.SearchText)                // - возвращает наблюдаемое свойство каждый раз, когда меняется строка поиска
+                .Throttle(TimeSpan.FromMilliseconds(400))       // - немного подождать, пока пользователь не перестанет вводите текст
+                .ObserveOn(RxApp.MainThreadScheduler)           // - обеспечения вызова подписанного метода в UI-потоке
+                .Subscribe(DoSearch!);                          // - вызов метода DoSearch для каждого наблюдаемого события
         }
+
 
         public ObservableCollection<AlbumViewModel> SearchResults { get; } = new();
 
@@ -48,6 +57,23 @@ namespace Avalonia.MusicStore.ViewModels
             get => _selectedAlbum;
             set => this.RaiseAndSetIfChanged(ref _selectedAlbum, value);
         }
+
+
+        //########################################################################################
+        #region COMMANDS
+
+        /// <summary>
+        /// Команда для покупки музыкального альбома
+        /// </summary>
+        public ReactiveCommand<Unit, AlbumViewModel?> BuyMusicCommand { get; }
+
+
+
+        #endregion // COMMANDS
+
+
+        //########################################################################################
+        #region PRIVATE METHODS
 
         /// <summary>
         /// Реализация поиска
@@ -82,6 +108,7 @@ namespace Avalonia.MusicStore.ViewModels
             IsBusy = false;
         }
 
+
         /// <summary>
         /// Метод, который сможет запускать загрузку обложек альбомов при изменении результатов поиска (асинхронный, отменяемый)
         /// </summary>
@@ -98,5 +125,7 @@ namespace Avalonia.MusicStore.ViewModels
                 }
             }
         }
+
+        #endregion // PRIVATE METHODS
     }
 }
